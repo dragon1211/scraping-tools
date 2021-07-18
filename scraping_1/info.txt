@@ -1,0 +1,6 @@
+store names
+addresses
+phone numbers
+website URLs
+email addresses
+https://www.wine-searcher.com/biz/all
