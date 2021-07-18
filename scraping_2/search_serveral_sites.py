@@ -40,6 +40,7 @@ class AmazonProductScraper:
         opt.add_argument("--disable-infobars")
         opt.add_argument("--disable-extensions")
         opt.add_argument('--log-level=OFF')
+        opt.add_argument("window-size=400,500")
         opt.add_experimental_option('excludeSwitches', ['enable-logging'])
         self.cur_url = site_url + "/biz/all"
         self.home_url = site_url + "/biz/all"
