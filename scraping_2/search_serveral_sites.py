@@ -1,5 +1,6 @@
 
 import os
+import webbrowser
 import time
 from datetime import date
 import csv
@@ -8,6 +9,17 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
+
+import tkinter as tk
+import tkinter.font as font
+
+import sys
+from PyQt5.QtWidgets import (
+    QApplication, QDialog, QMainWindow, QMessageBox
+)
+from PyQt5.uic import loadUi
+
+
 
 """
     Step1: Open the browser
@@ -35,29 +47,23 @@ class AmazonProductScraper:
         self.result_records = []
         self.urls = list()
 
-    def open_browser(self):
+    def open_browser(self, search_key):
         opt = Options()
         opt.add_argument("--disable-infobars")
         opt.add_argument("--disable-extensions")
         opt.add_argument('--log-level=OFF')
         opt.add_argument("window-size=400,500")
+        opt.add_argument("--start-maximized")
         opt.add_experimental_option('excludeSwitches', ['enable-logging'])
         self.cur_url = site_url + "/biz/all"
         self.home_url = site_url + "/biz/all"
-        # self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=opt)
-        
-
-        search_key = input('Input your product key:')
-        
-        # url1 = "https://www.gebnegozionline.com/it_it/"
         self.urls.append("https://www.julian-fashion.com/en-JP/products/search?searchKey={}".format(search_key))
         self.urls.append("https://www.angelominetti.it/en/shop.html?tp=search&QCerca={}&idsett=man".format(search_key))
         self.urls.append("https://www.viettishop.com/it/catalogsearch/result/?q={}".format(search_key))
-
+        # self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=opt)
+        webbrowser.open_new('')
         for url in self.urls:
-            self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=opt)
-            self.driver.get(url)       
-
+            webbrowser.get('C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s').open(url)       
         print(self.urls)
 
 
@@ -172,9 +178,46 @@ class AmazonProductScraper:
         self.product_information_spreadsheet(self.result_records)
         exit(0)
 # ////////////////////////////////////////////////////////////////
+class SearchDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        loadUi("./ui/gui.ui", self)
+        self.btn_search.setEnabled(False)
+        self.tableWidget.setColumnWidth(0, 50)
+        self.tableWidget.setColumnWidth(1, 200)
+        self.tableWidget.setColumnWidth(2, 200)
+        self.tableWidget.setColumnWidth(3, 200)
+        self.tableWidget.setColumnWidth(4, 100)
+
+    def showResult(self):
+        search_key = self.edit_key.text()
+        
+        print(search_key)
+        # scrape = AmazonProductScraper()
+        # scrape.open_browser(search_key)
+        # print(search_key)
+    def enableBtn(self):
+        if self.edit_key.text() == '': 
+            self.btn_search.setEnabled(False)
+        else:  self.btn_search.setEnabled(True)
+
+        entries = ['one','two', 'three']
+
+        model = Qt.QStandardItemModel()
+        self.listView.setModel(model)
+
+        for i in entries:
+            item = QtGui.QStandardItem(i)
+            model.appendRow(item)
 
 if __name__ == "__main__":
 
-    my_amazon_bot = AmazonProductScraper()
-    # my_amazon_bot.scrapping_start()
-    my_amazon_bot.open_browser()
+#     my_amazon_bot = AmazonProductScraper()
+#     # my_amazon_bot.scrapping_start()
+#     my_amazon_bot.open_browser()
+    app = QApplication(sys.argv)
+    win = SearchDialog()
+    win.show()
+    sys.exit(app.exec())
+
+    
