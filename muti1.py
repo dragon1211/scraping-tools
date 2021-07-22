@@ -42,7 +42,7 @@ p.map(scrape, all_urls)
 p.terminate()
 p.join()
 
-a = input("asdfasdf")
+# a = input("asdfasdf")
 
 ###############################################################
 # from multiprocessing import Process
